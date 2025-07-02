@@ -221,14 +221,17 @@
         }
 
         .target-ring {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: conic-gradient(from 0deg, #ff006e, #8b00ff, #00ffff, #00ff88, #ffff00, #ff006e);
-            animation: targetSpin 3s linear infinite;
-            opacity: 0.8;
-            filter: blur(3px);
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: conic-gradient(from 0deg, #ff006e, #8b00ff, #00ffff, #00ff88, #ffff00, #ff006e);
+        animation: targetSpin 3s linear infinite;
+        opacity: 0.8;
+        filter: blur(3px);
+        transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                    opacity 0.2s ease-out,
+                    filter 0.3s ease-out;
         }
 
         @keyframes targetSpin {
@@ -237,19 +240,20 @@
         }
 
         .target-inner {
-            position: relative;
-            width: 90%;
-            height: 90%;
-            background: radial-gradient(circle at center, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.95) 100%);
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid rgba(255,255,255,0.2);
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
-            z-index: 1;
-        }
+        position: relative;
+        width: 90%;
+        height: 90%;
+        background: radial-gradient(circle at center, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.95) 100%);
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid rgba(255,255,255,0.2);
+        box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+        z-index: 1;
+        transition: background 0.3s ease-out;
+    }
 
         .target-number {
             font-size: clamp(80px, 20vw, 120px);
@@ -258,6 +262,7 @@
             color: #ffffff;
             text-shadow: 0 0 30px rgba(255,255,255,0.5);
             animation: numberPulse 2s ease-in-out infinite;
+            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         @keyframes numberPulse {
@@ -314,6 +319,30 @@
             stroke-dashoffset: 0;
             transition: stroke-dashoffset 0.1s linear;
             filter: drop-shadow(0 0 10px rgba(0,255,136,0.5));
+        }
+
+        /* Beat Indicator */
+        .beat-indicator {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .beat-dot {
+            width: 12px;
+            height: 12px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            transition: all 0.1s ease-out;
+        }
+
+        .beat-dot.active {
+            background: #00ff88;
+            transform: scale(1.5);
+            box-shadow: 0 0 20px #00ff88;
         }
 
         /* Control Buttons */
@@ -881,1075 +910,152 @@
                         <div class="indicator-dot"></div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Control Buttons -->
-        <div class="controls-section">
-            <div class="controls-container" id="controlsContainer" style="display: none;">
-                <button class="input-button" data-number="1">1</button>
-                <button class="input-button" data-number="2">2</button>
-                <button class="input-button" data-number="3">3</button>
-                <button class="input-button" data-number="4">4</button>
-                <button class="input-button" data-number="5">5</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Music Panel -->
-    <div class="music-panel" id="musicPanel">
-        <div class="music-panel-title">Choose Your Track</div>
-        
-        <!-- Generated Tracks -->
-        <div class="music-section">
-            <div class="section-title">AI Generated</div>
-            <div class="music-option active" data-genre="viral">
-                <svg class="music-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                </svg>
-                Viral Phonk
-            </div>
-            <div class="music-option" data-genre="hype">
-                <svg class="music-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
-                </svg>
-                EDM Hype
-            </div>
-            <div class="music-option" data-genre="chill">
-                <svg class="music-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 5h-3v5.5c0 1.38-1.12 2.5-2.5 2.5S10 13.88 10 12.5s1.12-2.5 2.5-2.5c.57 0 1.08.19 1.5.51V5h4v2zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6z"/>
-                </svg>
-                Chill Trap
-            </div>
-        </div>
-        
-        <!-- Default Tracks -->
-        <div class="music-section">
-            <div class="section-title">Featured Tracks</div>
-            <div class="music-option" data-track="wanderlust">
-                <svg class="music-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
-                </svg>
-                Wanderlust - Midtempo Bass
-            </div>
-            <div class="music-option" data-track="crazy">
-                <svg class="music-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
-                </svg>
-                Crazy - Electronic Pop
-            </div>
-            <div class="music-option" data-track="seven_lions">
-                <svg class="music-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
-                </svg>
-                Seven Lions & YDG
-            </div>
-            <div class="music-option" data-track="pachamama">
-                <svg class="music-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
-                </svg>
-                Pachamama - Luude
-            </div>
-            <div class="music-option" data-track="party_jumpin">
-                <svg class="music-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
-                </svg>
-                Party Jumpin' - Marshmello
-            </div>
-        </div>
-        
-        <!-- Custom Upload -->
-        <div class="music-section">
-            <div class="section-title">Custom</div>
-            <div class="music-option" data-genre="custom">
-                <svg class="music-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
-                </svg>
-                Upload Your Music
-            </div>
-        </div>
-    </div>
-
-    <!-- Tutorial Overlay -->
-    <div class="overlay" id="tutorialOverlay" style="display: flex;">
-        <div class="overlay-card">
-            <h2 class="overlay-title">FINGER BEAT</h2>
-            <p class="overlay-text">
-                Match the number shown on screen by tapping the correct button.
-                Stay in sync with the music for maximum points!
-            </p>
-            <div class="music-note" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 15px; margin: 20px 0; font-size: 13px; opacity: 0.7;">
-                <strong>Music Note:</strong> To use the featured tracks, place these files in the same folder as the game:
-                <ul style="margin: 10px 0 0 20px; font-size: 12px; line-height: 1.6;">
-                    <li>Everen_Maxwell_Wanderlust</li>
-                    <li>BEAUZ_JVNA_Crazy.mp3</li>
-                    <li>Seven_Lions,_YDG_Bella_Renee</li>
-                    <li>Luude_Pachamama_feat_Elliphant</li>
-                    <li>Marshmello_x_Deadlyft</li>
-                </ul>
-            </div>
-            <button class="menu-button primary" onclick="startGame()">START PLAYING</button>
-        </div>
-    </div>
-
-    <!-- Pause Overlay -->
-    <div class="overlay" id="pauseOverlay">
-        <div class="overlay-card">
-            <h2 class="overlay-title">PAUSED</h2>
-            <button class="menu-button primary" onclick="resumeGame()">RESUME</button>
-            <button class="menu-button" onclick="restartGame()">RESTART</button>
-            <button class="menu-button" onclick="quitToMenu()">MAIN MENU</button>
-        </div>
-    </div>
-
-    <!-- Game Over Overlay -->
-    <div class="overlay" id="gameOverOverlay">
-        <div class="overlay-card">
-            <h2 class="overlay-title">GAME OVER</h2>
-            <div class="overlay-text">
-                <div style="font-size: 48px; font-weight: 900; margin: 20px 0; color: #00ff88;" id="finalScore">0</div>
-                <div style="margin: 10px 0;">Level Reached: <span style="font-weight: 700;" id="finalLevel">1</span></div>
-                <div style="margin: 10px 0;">Best Combo: <span style="font-weight: 700;" id="finalCombo">0</span></div>
-            </div>
-            <button class="menu-button primary" onclick="restartGame()">PLAY AGAIN</button>
-            <button class="menu-button" onclick="quitToMenu()">MAIN MENU</button>
-        </div>
-    </div>
-
-    <!-- Hidden file input -->
-    <input type="file" id="audioFile" accept="audio/*">
-
-    <script>
-        class FingerBeatGame {
-            constructor() {
-                this.initializeGame();
-                this.setupEventListeners();
-                this.hideLoadingScreen();
                 
-                // Generate initial audio
-                setTimeout(() => {
-                    this.generateGenreAudio('viral');
-                }, 500);
-            }
-
-            initializeGame() {
-                this.audioContext = null;
-                this.audioSource = null;
-                this.audioBuffer = null;
-                this.currentGenre = 'viral';
-                this.currentTrack = null;
-                this.isLoadingAudio = false;
-                
-                this.gameState = {
-                    isPlaying: false,
-                    isPaused: false,
-                    score: 0,
-                    level: 1,
-                    lives: 3,
-                    combo: 0,
-                    maxCombo: 0,
-                    currentTarget: 3,
-                    timeRemaining: 100,
-                    maxTime: 100,
-                    speedMultiplier: 1
-                };
-
-                this.genres = {
-                    viral: { bpm: 140, name: 'Viral Phonk' },
-                    hype: { bpm: 128, name: 'EDM Hype' },
-                    chill: { bpm: 85, name: 'Chill Trap' },
-                    custom: { bpm: 120, name: 'Custom Audio' }
-                };
-
-                // Predefined tracks info
-                this.tracks = {
-                    wanderlust: { 
-                        name: 'Wanderlust - Midtempo Bass',
-                        file: 'Everen_Maxwell_Wanderlust_Midtempo_Bass_NCS.mp3',
-                        bpm: 100
-                    },
-                    crazy: { 
-                        name: 'Crazy - Electronic Pop',
-                        file: 'BEAUZ_JVNA_Crazy_Electronic_Pop_NCS.mp3',
-                        bpm: 128
-                    },
-                    seven_lions: { 
-                        name: 'Seven Lions & YDG',
-                        file: 'Seven_Lions,_YDG___Bella_Renee.mp3',
-                        bpm: 140
-                    },
-                    pachamama: { 
-                        name: 'Pachamama - Luude',
-                        file: 'Luude_Pachamama_feat_Elliphant.mp3',
-                        bpm: 110
-                    },
-                    party_jumpin: { 
-                        name: 'Party Jumpin\' - Marshmello',
-                        file: 'Marshmello_x_Deadlyft_Party_Jumpin.mp3',
-                        bpm: 128
-                    }
-                };
-            }
-
-            hideLoadingScreen() {
-                setTimeout(() => {
-                    const loadingScreen = document.getElementById('loadingScreen');
-                    loadingScreen.style.opacity = '0';
-                    setTimeout(() => {
-                        loadingScreen.style.display = 'none';
-                    }, 500);
-                }, 1500);
-            }
-
-            showLoadingIndicator(text = 'Loading...') {
-                const indicator = document.getElementById('loadingIndicator');
-                const loadingText = document.getElementById('loadingText');
-                loadingText.textContent = text;
-                indicator.classList.add('show');
-            }
-
-            hideLoadingIndicator() {
-                const indicator = document.getElementById('loadingIndicator');
-                indicator.classList.remove('show');
-            }
-
-            setupEventListeners() {
-                // Music toggle with better touch handling
-                const musicToggleBtn = document.getElementById('musicToggleBtn');
-                musicToggleBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const musicPanel = document.getElementById('musicPanel');
-                    musicPanel.classList.toggle('show');
-                });
-
-                // Touch optimization for mobile
-                musicToggleBtn.addEventListener('touchend', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const musicPanel = document.getElementById('musicPanel');
-                    musicPanel.classList.toggle('show');
-                });
-
-                // Music selection with better feedback
-                document.querySelectorAll('.music-option').forEach(option => {
-                    const handleSelection = (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        
-                        // Visual feedback
-                        option.style.transform = 'scale(0.95)';
-                        setTimeout(() => {
-                            option.style.transform = '';
-                        }, 150);
-
-                        const genre = option.dataset.genre;
-                        const track = option.dataset.track;
-                        
-                        if (genre === 'custom') {
-                            document.getElementById('audioFile').click();
-                        } else if (track) {
-                            this.selectTrack(track);
-                        } else if (genre) {
-                            this.selectGenre(genre);
-                        }
-                    };
-
-                    option.addEventListener('click', handleSelection);
-                    option.addEventListener('touchend', (e) => {
-                        e.preventDefault();
-                        handleSelection(e);
-                    });
-                });
-
-                // Input buttons with improved touch response
-                document.querySelectorAll('.input-button').forEach(button => {
-                    const handleInput = (e) => {
-                        e.preventDefault();
-                        if (this.gameState.isPlaying && !this.gameState.isPaused) {
-                            this.handleInput(parseInt(button.dataset.number));
-                        }
-                    };
-
-                    button.addEventListener('click', handleInput);
-                    button.addEventListener('touchstart', (e) => {
-                        e.preventDefault();
-                        handleInput(e);
-                    });
-                });
-
-                // Pause button
-                const pauseBtn = document.getElementById('pauseBtn');
-                pauseBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    this.pauseGame();
-                });
-                pauseBtn.addEventListener('touchend', (e) => {
-                    e.preventDefault();
-                    this.pauseGame();
-                });
-
-                // File input with loading feedback
-                document.getElementById('audioFile').addEventListener('change', (e) => {
-                    this.handleCustomAudio(e);
-                });
-
-                // Close music panel when clicking outside
-                document.addEventListener('click', (e) => {
-                    const musicPanel = document.getElementById('musicPanel');
-                    const musicToggle = document.getElementById('musicToggleBtn');
-                    if (!musicPanel.contains(e.target) && 
-                        !musicToggle.contains(e.target) && 
-                        musicPanel.classList.contains('show')) {
-                        musicPanel.classList.remove('show');
-                    }
-                });
-
-                // Menu buttons with better touch handling
-                document.querySelectorAll('.menu-button').forEach(button => {
-                    button.addEventListener('touchstart', (e) => {
-                        e.preventDefault();
-                        button.style.transform = 'scale(0.98)';
-                    });
-                    button.addEventListener('touchend', (e) => {
-                        e.preventDefault();
-                        button.style.transform = '';
-                        button.click();
-                    });
-                });
-
-                // Keyboard support
-                document.addEventListener('keydown', (e) => {
-                    if (this.gameState.isPlaying && !this.gameState.isPaused) {
-                        if (e.key >= '1' && e.key <= '5') {
-                            this.handleInput(parseInt(e.key));
-                        }
-                    }
-                    if (e.key === 'Escape' && this.gameState.isPlaying) {
-                        this.pauseGame();
-                    }
-                });
-
-                // Prevent iOS bounce and zoom
-                document.addEventListener('touchmove', (e) => {
-                    if (e.touches.length === 1) {
-                        e.preventDefault();
-                    }
-                }, { passive: false });
-
-                // Prevent double tap zoom
-                let lastTouchEnd = 0;
-                document.addEventListener('touchend', (e) => {
-                    const now = Date.now();
-                    if (now - lastTouchEnd <= 300) {
-                        e.preventDefault();
-                    }
-                    lastTouchEnd = now;
-                }, false);
-            }
-
-            async setupAudioContext() {
-                try {
-                    if (!this.audioContext) {
-                        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    }
-                    if (this.audioContext.state === 'suspended') {
-                        await this.audioContext.resume();
-                    }
-                    return true;
-                } catch (error) {
-                    console.error('Audio context error:', error);
-                    return false;
-                }
-            }
-
-            selectGenre(genre) {
-                if (this.isLoadingAudio) return;
-
-                // Update UI
-                document.querySelectorAll('.music-option').forEach(opt => {
-                    opt.classList.remove('active');
-                });
-                document.querySelector(`[data-genre="${genre}"]`).classList.add('active');
-
-                // Update background
-                document.querySelectorAll('.bg-layer').forEach(layer => {
-                    layer.classList.remove('active');
-                });
-                const bgId = `bg${genre.charAt(0).toUpperCase() + genre.slice(1)}`;
-                document.getElementById(bgId).classList.add('active');
-
-                this.currentGenre = genre;
-                this.currentTrack = null;
-                
-                // Generate audio with loading indicator
-                this.showLoadingIndicator(`Loading ${this.genres[genre].name}...`);
-                this.generateGenreAudio(genre).then(() => {
-                    this.hideLoadingIndicator();
-                });
-
-                // Close panel after selection
-                setTimeout(() => {
-                    document.getElementById('musicPanel').classList.remove('show');
-                }, 200);
-            }
-
-            async selectTrack(trackId) {
-                if (this.isLoadingAudio) return;
-
-                const track = this.tracks[trackId];
-                if (!track) return;
-
-                // Update UI
-                document.querySelectorAll('.music-option').forEach(opt => {
-                    opt.classList.remove('active');
-                });
-                document.querySelector(`[data-track="${trackId}"]`).classList.add('active');
-
-                // Update background to custom
-                document.querySelectorAll('.bg-layer').forEach(layer => {
-                    layer.classList.remove('active');
-                });
-                document.getElementById('bgCustom').classList.add('active');
-
-                this.currentTrack = trackId;
-                this.currentGenre = null;
-
-                // Load track
-                this.showLoadingIndicator(`Loading ${track.name}...`);
-                
-                try {
-                    await this.loadTrackFile(track.file);
-                    this.hideLoadingIndicator();
-                } catch (error) {
-                    console.error('Error loading track:', error);
-                    this.hideLoadingIndicator();
-                    alert(`Could not load ${track.name}. Please make sure the file "${track.file}" is in the same directory as the game.`);
-                    
-                    // Fall back to generated audio
-                    this.selectGenre('viral');
-                }
-
-                // Close panel after selection
-                setTimeout(() => {
-                    document.getElementById('musicPanel').classList.remove('show');
-                }, 200);
-            }
-
-            async loadTrackFile(filename) {
-                if (this.isLoadingAudio) return;
-                this.isLoadingAudio = true;
-
-                try {
-                    const audioReady = await this.setupAudioContext();
-                    if (!audioReady) {
-                        throw new Error('Audio context not available');
-                    }
-
-                    // Try to load the file
-                    const response = await fetch(filename);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    
-                    const arrayBuffer = await response.arrayBuffer();
-                    this.audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
-
-                    // Stop previous audio
-                    if (this.audioSource) {
-                        try {
-                            this.audioSource.stop();
-                            this.audioSource.disconnect();
-                        } catch (e) {
-                            // Already stopped
-                        }
-                    }
-
-                    // Start playback if game is active
-                    if (this.gameState.isPlaying) {
-                        this.startAudioPlayback();
-                    }
-
-                } catch (error) {
-                    console.error('Error loading track file:', error);
-                    throw error;
-                } finally {
-                    this.isLoadingAudio = false;
-                }
-            }
-
-            async generateGenreAudio(genre) {
-                if (this.isLoadingAudio) return;
-                this.isLoadingAudio = true;
-
-                try {
-                    const audioReady = await this.setupAudioContext();
-                    if (!audioReady) {
-                        throw new Error('Audio context not available');
-                    }
-
-                    const sampleRate = this.audioContext.sampleRate;
-                    const duration = 120; // 2 minutes
-                    const frameCount = sampleRate * duration;
-                    const audioBuffer = this.audioContext.createBuffer(2, frameCount, sampleRate);
-
-                    const bpm = this.genres[genre].bpm;
-                    const beatInterval = (60 / bpm) * sampleRate;
-
-                    // Generate audio data
-                    for (let channel = 0; channel < 2; channel++) {
-                        const channelData = audioBuffer.getChannelData(channel);
-                        
-                        for (let i = 0; i < frameCount; i++) {
-                            const time = i / sampleRate;
-                            const beatPosition = (i % beatInterval) / beatInterval;
-                            let sample = 0;
-
-                            switch (genre) {
-                                case 'viral':
-                                    // Heavy bass with phonk elements
-                                    if (beatPosition < 0.1) {
-                                        sample = Math.sin(2 * Math.PI * 55 * time) * 0.8 * Math.exp(-beatPosition * 15);
-                                        sample += Math.sin(2 * Math.PI * 110 * time) * 0.4 * Math.exp(-beatPosition * 10);
-                                    }
-                                    // Cowbell rhythm
-                                    if ((beatPosition > 0.5 && beatPosition < 0.52) || 
-                                        (beatPosition > 0.75 && beatPosition < 0.77)) {
-                                        sample += Math.sin(2 * Math.PI * 800 * time) * 0.3 * Math.exp(-(beatPosition % 0.25) * 100);
-                                    }
-                                    // Sub bass
-                                    sample += Math.sin(2 * Math.PI * 35 * time) * 0.15;
-                                    // Distortion
-                                    sample = Math.tanh(sample * 1.5) * 0.7;
-                                    break;
-
-                                case 'hype':
-                                    // Four-on-floor kick
-                                    if (beatPosition < 0.05) {
-                                        sample = Math.sin(2 * Math.PI * 60 * time) * Math.exp(-beatPosition * 20);
-                                        sample += Math.sin(2 * Math.PI * 120 * time) * 0.5 * Math.exp(-beatPosition * 25);
-                                    }
-                                    // Side-chain compression effect
-                                    const sidechain = beatPosition < 0.1 ? 0.3 : 1;
-                                    // Supersaw lead
-                                    const sawFreq = 440 * Math.pow(2, Math.sin(time * 0.5) * 0.5);
-                                    for (let h = 1; h <= 5; h++) {
-                                        sample += Math.sin(2 * Math.PI * sawFreq * h * time) * (0.3 / h) * sidechain;
-                                    }
-                                    // Hi-hats
-                                    if ((beatPosition > 0.25 && beatPosition < 0.27) || 
-                                        (beatPosition > 0.75 && beatPosition < 0.77)) {
-                                        sample += (Math.random() - 0.5) * 0.2;
-                                    }
-                                    sample *= 0.5;
-                                    break;
-
-                                case 'chill':
-                                    // Trap 808 bass
-                                    if (beatPosition < 0.2) {
-                                        const pitch = beatPosition < 0.05 ? 50 : 45;
-                                        sample = Math.sin(2 * Math.PI * pitch * time) * 0.7 * Math.exp(-beatPosition * 8);
-                                    }
-                                    // Snare
-                                    if (beatPosition > 0.48 && beatPosition < 0.52) {
-                                        sample += (Math.random() - 0.5) * 0.5 * Math.exp(-(beatPosition - 0.5) * 50);
-                                        sample += Math.sin(2 * Math.PI * 200 * time) * 0.3 * Math.exp(-(beatPosition - 0.5) * 40);
-                                    }
-                                    // Ambient pad
-                                    sample += Math.sin(2 * Math.PI * 220 * time) * 0.1 * Math.sin(time * 0.2);
-                                    sample += Math.sin(2 * Math.PI * 330 * time) * 0.05 * Math.sin(time * 0.3);
-                                    // Hi-hat rolls
-                                    const hihatPattern = Math.sin(time * bpm * 4) > 0.7;
-                                    if (hihatPattern) {
-                                        sample += (Math.random() - 0.5) * 0.15;
-                                    }
-                                    sample *= 0.6;
-                                    break;
-                            }
-
-                            // Stereo effect
-                            if (channel === 1) {
-                                sample *= 0.95;
-                                sample += Math.sin(2 * Math.PI * 0.5 * time) * 0.02;
-                            }
-
-                            channelData[i] = sample;
-                        }
-                    }
-
-                    // Stop previous audio
-                    if (this.audioSource) {
-                        try {
-                            this.audioSource.stop();
-                            this.audioSource.disconnect();
-                        } catch (e) {
-                            // Already stopped
-                        }
-                    }
-
-                    this.audioBuffer = audioBuffer;
-                    
-                    // Start playback if game is active
-                    if (this.gameState.isPlaying) {
-                        this.startAudioPlayback();
-                    }
-
-                } catch (error) {
-                    console.error('Error generating audio:', error);
-                    this.hideLoadingIndicator();
-                } finally {
-                    this.isLoadingAudio = false;
-                }
-            }
-
-            async handleCustomAudio(event) {
-                const file = event.target.files[0];
-                if (!file) return;
-
-                this.showLoadingIndicator(`Loading ${file.name}...`);
-
-                try {
-                    const audioReady = await this.setupAudioContext();
-                    if (!audioReady) {
-                        throw new Error('Audio context not available');
-                    }
-
-                    const arrayBuffer = await file.arrayBuffer();
-                    this.audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
-                    
-                    // Update UI
-                    this.selectGenre('custom');
-                    const customOption = document.querySelector('[data-genre="custom"]');
-                    const fileName = file.name.length > 20 ? file.name.substring(0, 20) + '...' : file.name;
-                    customOption.innerHTML = `
-                        <svg class="music-icon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                        </svg>
-                        ${fileName}
-                    `;
-
-                    this.hideLoadingIndicator();
-
-                    if (this.gameState.isPlaying) {
-                        this.startAudioPlayback();
-                    }
-
-                } catch (error) {
-                    console.error('Error loading audio:', error);
-                    this.hideLoadingIndicator();
-                    alert('Error loading audio file. Please try another file.');
-                }
-
-                // Reset file input
-                event.target.value = '';
-            }
-
-            startAudioPlayback() {
-                try {
-                    if (!this.audioBuffer || !this.audioContext) return;
-
-                    if (this.audioSource) {
-                        try {
-                            this.audioSource.stop();
-                            this.audioSource.disconnect();
-                        } catch (e) {
-                            // Already stopped
-                        }
-                    }
-
-                    this.audioSource = this.audioContext.createBufferSource();
-                    this.audioSource.buffer = this.audioBuffer;
-                    this.audioSource.loop = true;
-                    this.audioSource.connect(this.audioContext.destination);
-                    this.audioSource.start(0);
-
-                } catch (error) {
-                    console.error('Error starting audio:', error);
-                }
-            }
-
-            handleInput(number) {
-                const button = document.querySelector(`[data-number="${number}"]`);
-                
-                if (number === this.gameState.currentTarget) {
-                    this.handleCorrectInput(button);
-                } else {
-                    this.handleWrongInput(button);
-                }
-            }
-
-            handleCorrectInput(button) {
-                button.classList.add('correct');
-                setTimeout(() => button.classList.remove('correct'), 600);
-
-                // Update combo
-                this.gameState.combo++;
-                this.gameState.maxCombo = Math.max(this.gameState.maxCombo, this.gameState.combo);
-
-                // Calculate score
-                const baseScore = 100;
-                const comboBonus = Math.min(this.gameState.combo * 10, 500);
-                const speedBonus = Math.floor((this.gameState.timeRemaining / this.gameState.maxTime) * 50);
-                const levelBonus = this.gameState.level * 20;
-                const totalScore = baseScore + comboBonus + speedBonus + levelBonus;
-
-                this.gameState.score += totalScore;
-                this.createScorePopup(totalScore, button);
-
-                // Update displays
-                this.updateDisplay();
-
-                // Create particles
-                this.createParticles(button);
-
-                // Vibrate if available
-                if (navigator.vibrate) {
-                    navigator.vibrate(50);
-                }
-
-                // Check level up
-                if (this.gameState.score > 0 && this.gameState.score % 1000 < totalScore) {
-                    this.levelUp();
-                }
-
-                this.generateNewChallenge();
-            }
-
-            handleWrongInput(button) {
-                button.classList.add('wrong');
-                setTimeout(() => button.classList.remove('wrong'), 500);
-
-                this.gameState.combo = 0;
-                this.gameState.lives--;
-                this.updateDisplay();
-
-                if (navigator.vibrate) {
-                    navigator.vibrate([100, 50, 100]);
-                }
-
-                if (this.gameState.lives <= 0) {
-                    this.gameOver();
-                }
-            }
-
-            createScorePopup(score, element) {
-                const popup = document.createElement('div');
-                popup.className = 'score-popup';
-                popup.textContent = `+${score}`;
-                popup.style.color = '#00ff88';
-                
-                const rect = element.getBoundingClientRect();
-                popup.style.left = rect.left + rect.width / 2 + 'px';
-                popup.style.top = rect.top + 'px';
-
-                document.body.appendChild(popup);
-                setTimeout(() => popup.remove(), 1500);
-            }
-
-            createParticles(element) {
-                const rect = element.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
-
-                for (let i = 0; i < 12; i++) {
-                    const particle = document.createElement('div');
-                    particle.className = 'particle';
-                    
-                    const angle = (i / 12) * Math.PI * 2;
-                    const velocity = 100 + Math.random() * 100;
-                    const tx = Math.cos(angle) * velocity;
-                    const ty = Math.sin(angle) * velocity;
-
-                    particle.style.left = centerX + 'px';
-                    particle.style.top = centerY + 'px';
-                    particle.style.setProperty('--tx', tx + 'px');
-                    particle.style.setProperty('--ty', ty + 'px');
-                    particle.style.background = `hsl(${Math.random() * 60 + 120}, 100%, 60%)`;
-
-                    document.body.appendChild(particle);
-                    setTimeout(() => particle.remove(), 1000);
-                }
-            }
-
-            updateDisplay() {
-                // Score
-                document.getElementById('scoreValue').textContent = this.gameState.score.toLocaleString();
-
-                // Combo
-                document.getElementById('comboValue').textContent = `x${this.gameState.combo}`;
-                const fillPercent = Math.min((this.gameState.combo / 20) * 100, 100);
-                document.getElementById('comboFill').style.width = fillPercent + '%';
-
-                // Lives
-                for (let i = 1; i <= 3; i++) {
-                    const lifeDot = document.getElementById(`life${i}`);
-                    if (i > this.gameState.lives) {
-                        lifeDot.classList.add('lost');
-                    } else {
-                        lifeDot.classList.remove('lost');
-                    }
-                }
-            }
-
-            updateTimerDisplay() {
-                const progress = this.gameState.timeRemaining / this.gameState.maxTime;
-                const circumference = 2 * Math.PI * 140;
-                const offset = circumference - (progress * circumference);
-                document.getElementById('timerCircle').style.strokeDashoffset = offset;
-
-                // Change color based on time remaining
-                if (progress < 0.2) {
-                    document.getElementById('timerCircle').style.stroke = '#ff006e';
-                } else if (progress < 0.5) {
-                    document.getElementById('timerCircle').style.stroke = '#ffff00';
-                }
-            }
-
-            levelUp() {
-                this.gameState.level++;
-                this.gameState.speedMultiplier += 0.15;
-                this.gameState.maxTime = Math.max(40, this.gameState.maxTime - 5);
-                
-                const popup = document.createElement('div');
-                popup.className = 'score-popup';
-                popup.textContent = `LEVEL ${this.gameState.level}!`;
-                popup.style.color = '#ffff00';
-                popup.style.fontSize = '48px';
-                popup.style.left = '50%';
-                popup.style.top = '40%';
-                popup.style.transform = 'translate(-50%, -50%)';
-                document.body.appendChild(popup);
-                setTimeout(() => popup.remove(), 2000);
-            }
-
-            generateNewChallenge() {
-                // More varied number generation at higher levels
-                if (this.gameState.level > 5) {
-                    // Include previous number to make it harder
-                    let newTarget;
-                    do {
-                        newTarget = Math.floor(Math.random() * 5) + 1;
-                    } while (Math.random() < 0.3 && newTarget === this.gameState.currentTarget);
-                    this.gameState.currentTarget = newTarget;
-                } else {
-                    this.gameState.currentTarget = Math.floor(Math.random() * 5) + 1;
-                }
-                
-                this.gameState.timeRemaining = this.gameState.maxTime;
-                
-                document.getElementById('targetNumber').textContent = this.gameState.currentTarget;
-                
-                // Update indicator dots with animation
-                const dots = document.querySelectorAll('.indicator-dot');
-                dots.forEach((dot, index) => {
-                    setTimeout(() => {
-                        if (index < this.gameState.currentTarget) {
-                            dot.classList.add('active');
-                        } else {
-                            dot.classList.remove('active');
-                        }
-                    }, index * 50);
-                });
-            }
-
-            gameLoop() {
-                if (!this.gameState.isPlaying || this.gameState.isPaused) return;
-
-                this.gameState.timeRemaining -= this.gameState.speedMultiplier;
-                this.updateTimerDisplay();
-
-                if (this.gameState.timeRemaining <= 0) {
-                    this.handleWrongInput(document.createElement('div'));
-                    if (this.gameState.lives > 0) {
-                        this.generateNewChallenge();
-                    }
-                }
-
-                requestAnimationFrame(() => this.gameLoop());
-            }
-
-            async startGame() {
-                document.getElementById('tutorialOverlay').style.display = 'none';
-                
-                this.gameState = {
-                    isPlaying: true,
-                    isPaused: false,
-                    score: 0,
-                    level: 1,
-                    lives: 3,
-                    combo: 0,
-                    maxCombo: 0,
-                    currentTarget: 3,
-                    timeRemaining: 100,
-                    maxTime: 100,
-                    speedMultiplier: 1
-                };
-
-                this.updateDisplay();
-                document.getElementById('targetContainer').style.display = 'flex';
-                document.getElementById('controlsContainer').style.display = 'flex';
-                document.getElementById('pauseBtn').style.display = 'flex';
-
-                this.generateNewChallenge();
-
-                // Ensure audio is ready
-                if (!this.audioBuffer) {
-                    await this.generateGenreAudio(this.currentGenre);
-                }
-                
-                // Start audio playback
-                await this.setupAudioContext();
-                this.startAudioPlayback();
-
-                this.gameLoop();
-            }
-
-            pauseGame() {
-                if (!this.gameState.isPlaying || this.gameState.isPaused) return;
-                
-                this.gameState.isPaused = true;
-                document.getElementById('pauseOverlay').classList.add('show');
-                
-                if (this.audioContext && this.audioContext.state === 'running') {
-                    this.audioContext.suspend();
-                }
-            }
-
-            resumeGame() {
-                this.gameState.isPaused = false;
-                document.getElementById('pauseOverlay').classList.remove('show');
-                
-                if (this.audioContext && this.audioContext.state === 'suspended') {
-                    this.audioContext.resume();
-                }
-                
-                this.gameLoop();
-            }
-
-            gameOver() {
-                this.gameState.isPlaying = false;
-                
-                if (this.audioSource) {
-                    try {
-                        this.audioSource.stop();
-                        this.audioSource.disconnect();
-                    } catch (e) {
-                        // Already stopped
-                    }
-                }
-
-                document.getElementById('finalScore').textContent = this.gameState.score.toLocaleString();
-                document.getElementById('finalLevel').textContent = this.gameState.level;
-                document.getElementById('finalCombo').textContent = this.gameState.maxCombo;
-
-                document.getElementById('gameOverOverlay').classList.add('show');
-                document.getElementById('targetContainer').style.display = 'none';
-                document.getElementById('controlsContainer').style.display = 'none';
-                document.getElementById('pauseBtn').style.display = 'none';
-            }
-
-            restartGame() {
-                document.getElementById('gameOverOverlay').classList.remove('show');
-                document.getElementById('pauseOverlay').classList.remove('show');
-                
-                // Reset lives display
-                document.querySelectorAll('.life-dot').forEach(dot => {
-                    dot.classList.remove('lost');
-                });
-
-                // Reset timer color
-                document.getElementById('timerCircle').style.stroke = 'url(#timerGradient)';
-
-                this.startGame();
-            }
-
-            quitToMenu() {
-                this.gameState.isPlaying = false;
-                
-                if (this.audioSource) {
-                    try {
-                        this.audioSource.stop();
-                        this.audioSource.disconnect();
-                    } catch (e) {
-                        // Already stopped
-                    }
-                }
-
-                document.getElementById('gameOverOverlay').classList.remove('show');
-                document.getElementById('pauseOverlay').classList.remove('show');
-                document.getElementById('targetContainer').style.display = 'none';
-                document.getElementById('controlsContainer').style.display = 'none';
-                document.getElementById('pauseBtn').style.display = 'none';
-                document.getElementById('tutorialOverlay').style.display = 'flex';
-
-                // Reset displays
-                document.getElementById('scoreValue').textContent = '0';
-                document.getElementById('comboValue').textContent = 'x0';
-                document.getElementById('comboFill').style.width = '0%';
-                document.querySelectorAll('.life-dot').forEach(dot => {
-                    dot.classList.remove('lost');
-                });
-            }
-        }
-
-        // Global functions
-        let game;
-
-        function startGame() {
-            if (!game) {
-                game = new FingerBeatGame();
-            }
-            game.startGame();
-        }
-
-        function resumeGame() {
-            if (game) game.resumeGame();
-        }
-
-        function restartGame() {
-            if (game) game.restartGame();
-        }
-
-        function quitToMenu() {
-            if (game) game.quitToMenu();
-        }
-
-        // Initialize on load
-        window.addEventListener('load', () => {
-            console.log('Finger Beat Ultimate - Initializing...');
-            
-            try {
-                game = new FingerBeatGame();
-                console.log('Game initialized successfully!');
-            } catch (error) {
-                console.error('Initialization error:', error);
-            }
-            
-            // Prevent zoom on iOS
-            document.addEventListener('gesturestart', function(e) {
-                e.preventDefault();
-            });
-            
-            // Viewport height fix for mobile browsers
-            function setViewportHeight() {
-                const vh = window.innerHeight * 0.01;
-                document.documentElement.style.setProperty('--vh', `${vh}px`);
-            }
-            
-            setViewportHeight();
-            window.addEventListener('resize', setViewportHeight);
-            window.addEventListener('orientationchange', setViewportHeight);
-        });
-
-        // Add CSS variable for viewport height
-        const style = document.createElement('style');
-        style.textContent = `
-            .game-container {
-                height: 100vh;
-                height: calc(var(--vh, 1vh) * 100);
-            }
-        `;
-        document.head.appendChild(style);
-    </script>
+                <!-- Beat Indicator -->
+                <div class="beat-indicator">
+                    <div class="beat-dot" id="beat1"></div>
+                    <div class="beat-dot" id="beat2"></div>
+                    <div class="beat-dot" id="beat3"></div>
+                   <div class="beat-dot" id="beat4"></div>
+               </div>
+           </div>
+       </div>
+
+       <!-- Control Buttons -->
+       <div class="controls-section">
+           <div class="controls-container" id="controlsContainer" style="display: none;">
+               <button class="input-button" data-number="1">1</button>
+               <button class="input-button" data-number="2">2</button>
+               <button class="input-button" data-number="3">3</button>
+               <button class="input-button" data-number="4">4</button>
+               <button class="input-button" data-number="5">5</button>
+           </div>
+       </div>
+   </div>
+
+   <!-- Music Panel -->
+   <div class="music-panel" id="musicPanel">
+       <div class="music-panel-title">Choose Your Track</div>
+       
+       <!-- Generated Tracks -->
+       <div class="music-section">
+           <div class="section-title">AI Generated</div>
+           <div class="music-option active" data-genre="viral">
+               <svg class="music-icon" viewBox="0 0 24 24" fill="currentColor">
+                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+               </svg>
+               Viral Phonk
+           </div>
+           <div class="music-option" data-genre="hype">
+               <svg class="music-icon" viewBox="0 0 24 24" fill="currentColor">
+                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+               </svg>
+               EDM Hype
+           </div>
+           <div class="music-option" data-genre="chill">
+               <svg class="music-icon" viewBox="0 0 24 24" fill="currentColor">
+                   <path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 5h-3v5.5c0 1.38-1.12 2.5-2.5 2.5S10 13.88 10 12.5s1.12-2.5 2.5-2.5c.57 0 1.08.19 1.5.51V5h4v2zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6z"/>
+               </svg>
+               Chill Trap
+           </div>
+       </div>
+       
+       <!-- Default Tracks -->
+       <div class="music-section">
+           <div class="section-title">Featured Tracks</div>
+           <div class="music-option" data-track="wanderlust">
+               <svg class="music-icon" viewBox="0 0 24 24" fill="currentColor">
+                   <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+               </svg>
+               Wanderlust - Midtempo Bass
+           </div>
+           <div class="music-option" data-track="crazy">
+               <svg class="music-icon" viewBox="0 0 24 24" fill="currentColor">
+                   <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+               </svg>
+               Crazy - Electronic Pop
+           </div>
+           <div class="music-option" data-track="seven_lions">
+               <svg class="music-icon" viewBox="0 0 24 24" fill="currentColor">
+                   <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+               </svg>
+               Seven Lions & YDG
+           </div>
+           <div class="music-option" data-track="pachamama">
+               <svg class="music-icon" viewBox="0 0 24 24" fill="currentColor">
+                   <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+               </svg>
+               Pachamama - Luude
+           </div>
+           <div class="music-option" data-track="party_jumpin">
+               <svg class="music-icon" viewBox="0 0 24 24" fill="currentColor">
+                   <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+               </svg>
+               Party Jumpin' - Marshmello
+           </div>
+       </div>
+       
+       <!-- Custom Upload -->
+       <div class="music-section">
+           <div class="section-title">Custom</div>
+           <div class="music-option" data-genre="custom">
+               <svg class="music-icon" viewBox="0 0 24 24" fill="currentColor">
+                   <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
+               </svg>
+               Upload Your Music
+           </div>
+       </div>
+   </div>
+
+   <!-- Tutorial Overlay -->
+   <div class="overlay" id="tutorialOverlay" style="display: flex;">
+       <div class="overlay-card">
+           <h2 class="overlay-title">FINGER BEAT</h2>
+           <p class="overlay-text">
+               Match the number shown on screen by tapping the correct button.
+               Stay in sync with the music for maximum points!
+           </p>
+           <div class="music-note" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 15px; margin: 20px 0; font-size: 13px; opacity: 0.7;">
+               <strong>Music Note:</strong> To use the featured tracks, place these files in the same folder as the game:
+               <ul style="margin: 10px 0 0 20px; font-size: 12px; line-height: 1.6;">
+                   <li>Everen_Maxwell_Wanderlust</li>
+                   <li>BEAUZ_JVNA_Crazy.mp3</li>
+                   <li>Seven_Lions,_YDG_Bella_Renee</li>
+                   <li>Luude_Pachamama_feat_Elliphant</li>
+                   <li>Marshmello_x_Deadlyft</li>
+               </ul>
+           </div>
+           <button class="menu-button primary" onclick="startGame()">START PLAYING</button>
+       </div>
+   </div>
+
+   <!-- Pause Overlay -->
+   <div class="overlay" id="pauseOverlay">
+       <div class="overlay-card">
+           <h2 class="overlay-title">PAUSED</h2>
+           <button class="menu-button primary" onclick="resumeGame()">RESUME</button>
+           <button class="menu-button" onclick="restartGame()">RESTART</button>
+           <button class="menu-button" onclick="quitToMenu()">MAIN MENU</button>
+       </div>
+   </div>
+
+   <!-- Game Over Overlay -->
+   <div class="overlay" id="gameOverOverlay">
+       <div class="overlay-card">
+           <h2 class="overlay-title">GAME OVER</h2>
+           <div class="overlay-text">
+               <div style="font-size: 48px; font-weight: 900; margin: 20px 0; color: #00ff88;" id="finalScore">0</div>
+               <div style="margin: 10px 0;">Level Reached: <span style="font-weight: 700;" id="finalLevel">1</span></div>
+               <div style="margin: 10px 0;">Best Combo: <span style="font-weight: 700;" id="finalCombo">0</span></div>
+           </div>
+           <button class="menu-button primary" onclick="restartGame()">PLAY AGAIN</button>
+           <button class="menu-button" onclick="quitToMenu()">MAIN MENU</button>
+       </div>
+   </div>
+
+   <!-- Hidden file input -->
+   <input type="file" id="audioFile" accept="audio/*">
+
+   <script src="script.js"></script>
 </body>
 </html>
