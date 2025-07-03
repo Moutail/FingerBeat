@@ -21,7 +21,18 @@ class FingerBeatGame {
                this.nextBeatTime = 0;
                this.beatIndex = 0;
                this.gainNode = null;
-               
+
+                this.tutorialMode = true;
+                this.tutorialStep = 0;
+                this.levelGoals = {
+                    1: { targetsToHit: 5, description: "Apprenez les bases - Tapez 5 nombres correctement" },
+                    2: { targetsToHit: 10, description: "Prenez le rythme - Tapez 10 nombres sans erreur" },
+                    3: { targetsToHit: 15, description: "Accélérez - Le timer devient plus rapide" },
+                    4: { targetsToHit: 20, description: "Mode Combo - Construisez des combos pour plus de points" },
+                    5: { targetsToHit: 25, description: "Mode Expert - Vitesse maximale activée" }
+                };
+                this.targetsHitInLevel = 0;
+                        
                this.gameState = {
                    isPlaying: false,
                    isPaused: false,
@@ -44,34 +55,107 @@ class FingerBeatGame {
                };
 
                // Predefined tracks info
-               this.tracks = {
-                   wanderlust: { 
-                       name: 'Wanderlust - Midtempo Bass',
-                       file: 'Everen_Maxwell_Wanderlust_Midtempo_Bass_NCS.mp3',
-                       bpm: 100
-                   },
-                   crazy: { 
-                       name: 'Crazy - Electronic Pop',
-                       file: 'BEAUZ_JVNA_Crazy_Electronic_Pop_NCS.mp3',
-                       bpm: 128
-                   },
-                   seven_lions: { 
-                       name: 'Seven Lions & YDG',
-                       file: 'Seven_Lions,_YDG___Bella_Renee.mp3',
-                       bpm: 140
-                   },
-                   pachamama: { 
-                       name: 'Pachamama - Luude',
-                       file: 'Luude_Pachamama_feat_Elliphant.mp3',
-                       bpm: 110
-                   },
-                   party_jumpin: { 
-                       name: 'Party Jumpin\' - Marshmello',
-                       file: 'Marshmello_x_Deadlyft_Party_Jumpin_Official.mp3',
-                       bpm: 128
-                   }
-               };
+                this.tracks = {
+                    arcade: { 
+                        name: 'Arcade - Duncan Laurence',
+                        file: 'Duncan_Laurence_-_Arcade.mp3',
+                        bpm: 72
+                    },
+                    losing_game: { 
+                        name: 'A Losing Game - Duncan Laurence',
+                        file: 'Duncan_Laurence_A_Losing_Game.mp3',
+                        bpm: 95
+                    },
+                    jujutsu: { 
+                        name: 'Jujutsu Kaisen OP3',
+                        file: 'jujukaisenOp3.mp3',
+                        bpm: 145
+                    },
+                    dandadan: { 
+                        name: 'DAN DA DAN Opening',
+                        file: 'DAN_DA_DAN_Opening.mp3',
+                        bpm: 165
+                    },
+                    crazy: { 
+                        name: 'Crazy - Electronic Pop',
+                        file: 'BEAUZ_JVNA_Crazy_Electronic_Pop_NCS.mp3',
+                        bpm: 128
+                    }
+                };
            }
+
+           // Nouvelle fonction pour afficher les objectifs de niveau
+            showLevelObjective() {
+                const level = this.gameState.level;
+                const goal = this.levelGoals[level];
+                
+                if (!goal) return;
+                
+                // Créer l'overlay d'objectif
+                const objectiveOverlay = document.createElement('div');
+                objectiveOverlay.className = 'objective-overlay';
+                objectiveOverlay.innerHTML = `
+                    <div class="objective-card">
+                        <h3>NIVEAU ${level}</h3>
+                        <p class="objective-description">${goal.description}</p>
+                        <div class="objective-progress">
+                            <div class="progress-text">Objectif: ${goal.targetsToHit} touches correctes</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <button class="continue-button" id="startLevelBtn">COMMENCER</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(objectiveOverlay);
+                
+                // Ajouter l'événement après avoir ajouté l'overlay au DOM
+                document.getElementById('startLevelBtn').addEventListener('click', () => {
+                    this.startLevel();
+                });
+            }
+
+            // Nouvelle fonction pour démarrer un niveau
+            startLevel() {
+                const objectiveOverlay = document.querySelector('.objective-overlay');
+                if (objectiveOverlay) {
+                    objectiveOverlay.remove();
+                }
+                
+                // Ajuster la difficulté selon le niveau
+                switch(this.gameState.level) {
+                    case 1:
+                        // Niveau 1 : Très lent, beaucoup de temps
+                        this.gameState.maxTime = 150;
+                        this.gameState.speedMultiplier = 0.5;
+                        break;
+                    case 2:
+                        // Niveau 2 : Un peu plus rapide
+                        this.gameState.maxTime = 120;
+                        this.gameState.speedMultiplier = 0.7;
+                        break;
+                    case 3:
+                        // Niveau 3 : Vitesse normale
+                        this.gameState.maxTime = 100;
+                        this.gameState.speedMultiplier = 1;
+                        break;
+                    case 4:
+                        // Niveau 4 : Plus rapide
+                        this.gameState.maxTime = 80;
+                        this.gameState.speedMultiplier = 1.2;
+                        break;
+                    default:
+                        // Niveau 5+ : Difficulté progressive
+                        this.gameState.maxTime = Math.max(40, 80 - (this.gameState.level - 4) * 10);
+                        this.gameState.speedMultiplier = 1.2 + (this.gameState.level - 4) * 0.15;
+                }
+                
+                this.targetsHitInLevel = 0;
+                this.gameState.isPaused = false; // AJOUTEZ CETTE LIGNE
+                this.generateNewChallenge();
+                this.gameLoop();
+            }
 
            hideLoadingScreen() {
                setTimeout(() => {
@@ -700,20 +784,33 @@ class FingerBeatGame {
            }
 
            handleInput(number) {
-               const button = document.querySelector(`[data-number="${number}"]`);
-               
-               if (number === this.gameState.currentTarget) {
-                   this.handleCorrectInput(button);
-               } else {
-                   this.handleWrongInput(button);
-               }
-           }
+                console.log('Input received:', number, 'Target:', this.gameState.currentTarget, 'isPaused:', this.gameState.isPaused);
+                
+                const button = document.querySelector(`[data-number="${number}"]`);
+                
+                if (number === this.gameState.currentTarget) {
+                    this.handleCorrectInput(button);
+                } else {
+                    this.handleWrongInput(button);
+                }
+            }
 
            handleCorrectInput(button) {
                button.classList.add('correct');
                setTimeout(() => button.classList.remove('correct'), 600);
 
                this.animateTargetHit();
+               // Incrémenter les cibles touchées
+               this.targetsHitInLevel++;
+
+                // Vérifier si l'objectif du niveau est atteint
+                const currentGoal = this.levelGoals[this.gameState.level];
+                if (currentGoal && this.targetsHitInLevel >= currentGoal.targetsToHit) {
+                    this.completeLevelObjective();
+                }
+                
+                // Mettre à jour la barre de progression si elle existe
+                this.updateLevelProgress();
                // Update combo
                this.gameState.combo++;
                this.gameState.maxCombo = Math.max(this.gameState.maxCombo, this.gameState.combo);
@@ -746,6 +843,68 @@ class FingerBeatGame {
 
                this.generateNewChallenge();
            }
+
+           // Nouvelle fonction pour compléter un objectif de niveau
+            completeLevelObjective() {
+                // Pause le jeu
+                this.gameState.isPaused = true;
+                
+                // Afficher l'écran de succès
+                const successOverlay = document.createElement('div');
+                successOverlay.className = 'objective-overlay success';
+                successOverlay.innerHTML = `
+                    <div class="objective-card">
+                        <h3>NIVEAU ${this.gameState.level} TERMINÉ!</h3>
+                        <div class="stars">
+                            ⭐ ⭐ ⭐
+                        </div>
+                        <p class="success-stats">
+                            Score: ${this.gameState.score}<br>
+                            Meilleur Combo: ${this.gameState.maxCombo}<br>
+                            Précision: ${Math.round((this.targetsHitInLevel / (this.targetsHitInLevel + (3 - this.gameState.lives))) * 100)}%
+                        </p>
+                        <button class="continue-button primary" id="nextLevelBtn">NIVEAU SUIVANT</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(successOverlay);
+                
+                // Ajouter l'événement après avoir ajouté l'overlay au DOM
+                document.getElementById('nextLevelBtn').addEventListener('click', () => {
+                    this.nextLevel();
+                });
+            }
+
+            // Fonction pour passer au niveau suivant
+            nextLevel() {
+                const successOverlay = document.querySelector('.objective-overlay.success');
+                if (successOverlay) {
+                    successOverlay.remove();
+                }
+                
+                this.gameState.level++;
+                this.gameState.isPaused = false;
+                this.gameState.lives = 3; // Restaurer les vies
+                
+                // Réinitialiser l'affichage des vies
+                document.querySelectorAll('.life-dot').forEach(dot => {
+                    dot.classList.remove('lost');
+                });
+                
+                this.showLevelObjective();
+            }
+
+            // Mettre à jour la progression du niveau
+            updateLevelProgress() {
+                const progressBar = document.querySelector('.level-progress-bar');
+                if (progressBar) {
+                    const goal = this.levelGoals[this.gameState.level];
+                    if (goal) {
+                        const progress = (this.targetsHitInLevel / goal.targetsToHit) * 100;
+                        progressBar.style.width = Math.min(progress, 100) + '%';
+                    }
+                }
+            }
 
            animateTargetHit() {
                 const targetNumber = document.querySelector('.target-number');
@@ -961,40 +1120,40 @@ class FingerBeatGame {
            }
 
            async startGame() {
-               document.getElementById('tutorialOverlay').style.display = 'none';
-               
-               this.gameState = {
-                   isPlaying: true,
-                   isPaused: false,
-                   score: 0,
-                   level: 1,
-                   lives: 3,
-                   combo: 0,
-                   maxCombo: 0,
-                   currentTarget: 3,
-                   timeRemaining: 100,
-                   maxTime: 100,
-                   speedMultiplier: 1
-               };
-
-               this.updateDisplay();
-               document.getElementById('targetContainer').style.display = 'flex';
-               document.getElementById('controlsContainer').style.display = 'flex';
-               document.getElementById('pauseBtn').style.display = 'flex';
-
-               this.generateNewChallenge();
-
-               // Ensure audio is ready
-               if (!this.audioBuffer) {
-                   await this.generateGenreAudio(this.currentGenre);
-               }
-               
-               // Start audio playback
-               await this.setupAudioContext();
-               this.startAudioPlayback();
-
-               this.gameLoop();
-           }
+            document.getElementById('tutorialOverlay').style.display = 'none';
+            
+            this.gameState = {
+                isPlaying: true,
+                isPaused: true,
+                score: 0,
+                level: 1,
+                lives: 3,
+                combo: 0,
+                maxCombo: 0,
+                currentTarget: 3,
+                timeRemaining: 100,
+                maxTime: 150,
+                speedMultiplier: 0.5
+            };
+            
+            this.updateDisplay();
+            document.getElementById('targetContainer').style.display = 'flex';
+            document.getElementById('controlsContainer').style.display = 'flex';
+            document.getElementById('pauseBtn').style.display = 'flex';
+            
+            // Préparer l'audio AVANT d'afficher l'objectif
+            if (!this.audioBuffer) {
+                await this.generateGenreAudio(this.currentGenre);
+            }
+            
+            await this.setupAudioContext();
+            this.startAudioPlayback();
+            
+            // Afficher l'objectif du premier niveau APRÈS l'audio
+            this.showLevelObjective();
+            
+            // NE PAS appeler gameLoop() ici car on est en pause
+        }
 
            pauseGame() {
                if (!this.gameState.isPlaying || this.gameState.isPaused) return;
