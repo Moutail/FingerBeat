@@ -1,14 +1,14 @@
 class FingerBeatGame {
            constructor() {
-               this.initializeGame();
-               this.setupEventListeners();
-               this.hideLoadingScreen();
-               
-               // Generate initial audio
-               setTimeout(() => {
-                   this.generateGenreAudio('viral');
-               }, 500);
-           }
+            this.initializeGame();
+            this.setupEventListeners();
+            this.hideLoadingScreen();
+            
+            // Charger Arcade par défaut (la plus lente pour commencer)
+            setTimeout(() => {
+                this.selectTrack('arcade');
+            }, 500);
+        }
 
            initializeGame() {
                this.audioContext = null;
