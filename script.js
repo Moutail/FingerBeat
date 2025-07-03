@@ -4,10 +4,18 @@ class FingerBeatGame {
             this.setupEventListeners();
             this.hideLoadingScreen();
             
-            // Charger Arcade par défaut (la plus lente pour commencer)
+            // Précharger tous les fichiers audio en arrière-plan
+            this.preloadAudioFiles();
+            
+            // Générer l'audio synthétique immédiatement pour avoir du son
+            this.generateGenreAudio('viral');
+            
+            // Essayer de charger Arcade après un court délai
             setTimeout(() => {
-                this.selectTrack('arcade');
-            }, 500);
+                this.selectTrack('arcade').catch(() => {
+                    console.log('Arcade pas encore prête, utilisation de l\'audio généré');
+                });
+            }, 2000);
         }
 
            initializeGame() {
@@ -57,8 +65,8 @@ class FingerBeatGame {
                // Predefined tracks info
                 this.tracks = {
                     arcade: { 
-                        name: 'Arcade - Duncan Laurence',
-                        file: 'Duncan_Laurence_-_Arcade.mp3',
+                        name: 'Love is Gone - SLANDER',
+                        file: 'SLANDER_Love_is_Gone.mp3',
                         bpm: 72
                     },
                     losing_game: { 
@@ -84,6 +92,31 @@ class FingerBeatGame {
                 };
            }
 
+           showToast(message, duration = 3000) {
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 80px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(0,0,0,0.9);
+                color: white;
+                padding: 12px 24px;
+                border-radius: 24px;
+                font-size: 14px;
+                z-index: 1000;
+                animation: slideUp 0.3s ease-out;
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideDown 0.3s ease-out';
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
            // Nouvelle fonction pour afficher les objectifs de niveau
             showLevelObjective() {
                 const level = this.gameState.level;
@@ -178,6 +211,24 @@ class FingerBeatGame {
                const indicator = document.getElementById('loadingIndicator');
                indicator.classList.remove('show');
            }
+
+           // 
+            async preloadAudioFiles() {
+                const tracksToPreload = ['arcade', 'losing_game', 'jujutsu', 'dandadan'];
+                
+                for (const trackId of tracksToPreload) {
+                    const track = this.tracks[trackId];
+                    if (track) {
+                        // Créer un élément audio caché pour précharger
+                        const audio = new Audio();
+                        audio.preload = 'auto';
+                        audio.src = track.file;
+                        
+                        // Stocker la référence pour usage futur
+                        track.preloadedAudio = audio;
+                    }
+                }
+            }
 
            async setupAudioContext() {
                try {
