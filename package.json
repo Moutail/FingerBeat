@@ -1,0 +1,39 @@
+{
+    "name": "finger-beat-ultimate",
+    "version": "2.0.0",
+    "description": "Ultimate rhythm game with procedural audio generation and customizable features",
+    "main": "index.html",
+    "scripts": {
+      "start": "python -m http.server 8080",
+      "build": "echo 'No build process needed for vanilla HTML/JS'",
+      "deploy": "echo 'Copy all files to your web server'",
+      "test": "echo 'Open index.html in your browser to test'"
+    },
+    "keywords": [
+      "game",
+      "rhythm",
+      "music",
+      "html5",
+      "javascript",
+      "mobile",
+      "pwa",
+      "audio",
+      "procedural"
+    ],
+    "author": "Your Studio Name",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/yourusername/finger-beat-ultimate.git"
+    },
+    "bugs": {
+      "url": "https://github.com/yourusername/finger-beat-ultimate/issues"
+    },
+    "homepage": "https://yourusername.github.io/finger-beat-ultimate",
+    "engines": {
+      "node": ">=14.0.0"
+    },
+    "devDependencies": {
+      "http-server": "^14.1.1"
+    }
+  }
