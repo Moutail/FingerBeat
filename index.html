@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="description" content="Finger Beat - Ultimate rhythm game with procedural audio generation">
     <meta name="keywords" content="rhythm game, music game, finger beat, mobile game">
@@ -652,6 +653,36 @@
             transform: translateX(-50%);
             cursor: pointer;
             transition: transform 0.2s ease;
+        }
+
+        .setting-select {
+            background: var(--glass-background);
+            border: 2px solid var(--glass-border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            padding: 8px 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            outline: none;
+            min-width: 120px;
+        }
+
+        .setting-select:hover {
+            border-color: var(--primary-color);
+            background: rgba(255,255,255,0.1);
+        }
+
+        .setting-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(0,255,136,0.3);
+        }
+
+        .setting-select option {
+            background: var(--background-dark);
+            color: var(--text-primary);
+            padding: 8px;
         }
 
         /* Music Panel */
@@ -1375,6 +1406,109 @@
                 --text-secondary: rgba(255,255,255,0.9);
             }
         }
+
+        #installButton {
+            position: fixed;
+            bottom: 140px !important; /* Plus haut pour ne pas cacher les boutons */
+            right: 10px !important;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: #000;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,255,136,0.4);
+            transition: all 0.3s ease;
+        }
+
+        #installButton:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0,255,136,0.5);
+        }
+
+        #installButton:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(0,255,136,0.4);
+        }
+
+        @media (max-width: 768px) {
+    .controls-section {
+        height: 100px; /* Réduire la hauteur */
+        padding: 10px;
+    }
+    
+    .input-button {
+        max-width: 55px;
+        height: 55px;
+        font-size: 20px;
+    }
+    
+    .controls-container {
+        gap: 8px;
+    }
+    
+    /* Bouton d'installation repositionné */
+    #installButton {
+        bottom: 110px !important;
+        right: 10px !important;
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+    
+    /* Target plus petit sur mobile */
+    .target-container {
+        width: min(240px, 60vw);
+        height: min(240px, 60vw);
+    }
+    
+    .target-number {
+        font-size: clamp(60px, 18vw, 100px);
+    }
+}
+
+    /* Pour les très petits écrans */
+    @media (max-height: 600px) {
+        .game-header {
+            height: 50px;
+        }
+        
+        .side-buttons {
+            top: 60px;
+        }
+        
+        #installButton {
+            bottom: 90px !important;
+            padding: 6px 12px;
+            font-size: 11px;
+        }
+    }
+
+        /* Animation d'apparition du bouton */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #installButton {
+            animation: slideInUp 0.5s ease-out;
+        }
+
+        /* Support pour les thèmes sombres */
+        @media (prefers-color-scheme: dark) {
+            #installButton {
+                background: linear-gradient(135deg, #00ff88 0%, #00ffff 100%);
+            }
+        }
     </style>
 </head>
 <body>
@@ -1850,7 +1984,6 @@
     <input type="file" id="audioFile" accept="audio/*">
     <input type="file" id="dataImportFile" accept=".json">
 
-    <script src="script.js">
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
